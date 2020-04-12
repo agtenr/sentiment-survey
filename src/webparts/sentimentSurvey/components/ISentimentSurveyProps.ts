@@ -1,3 +1,7 @@
+import { DisplayMode } from "@microsoft/sp-core-library";
 export interface ISentimentSurveyProps {
-  description: string;
+  displayMode: DisplayMode;
+  listId: string;
+  userLogin: string;
+  onConfigure(): void;
 }
