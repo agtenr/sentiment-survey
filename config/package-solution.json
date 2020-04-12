@@ -1,0 +1,13 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "sentiment-survey-client-side-solution",
+    "id": "7dcfe1b1-4cdc-4f83-afaf-5e8eea20137e",
+    "version": "1.0.0.0",
+    "includeClientSideAssets": true,
+    "isDomainIsolated": false
+  },
+  "paths": {
+    "zippedPackage": "solution/sentiment-survey.sppkg"
+  }
+}

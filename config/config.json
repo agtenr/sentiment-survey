@@ -1,0 +1,18 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/config.2.0.schema.json",
+  "version": "2.0",
+  "bundles": {
+    "sentiment-survey-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/sentimentSurvey/SentimentSurveyWebPart.js",
+          "manifest": "./src/webparts/sentimentSurvey/SentimentSurveyWebPart.manifest.json"
+        }
+      ]
+    }
+  },
+  "externals": {},
+  "localizedResources": {
+    "SentimentSurveyWebPartStrings": "lib/webparts/sentimentSurvey/loc/{locale}.js"
+  }
+}
