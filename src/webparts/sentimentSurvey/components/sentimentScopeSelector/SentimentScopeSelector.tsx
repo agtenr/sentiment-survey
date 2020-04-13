@@ -9,13 +9,13 @@ export const SentimentScopeSelector: React.SFC<ISentimentScopeSelectorProps> = (
       {props.scopes.map((scope: IIndicatorScope, index: number) => {
         const isSelected: boolean = scope.key === props.selectedScope.key;
         return (
-          <span
+          <div
             className={isSelected ? styles.selected : ""}
             key={index}
             onClick={() => props.onScopeChange(scope)}
           >
             {scope.name}
-          </span>
+          </div>
         );
       })}
     </div>

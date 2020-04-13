@@ -3,6 +3,7 @@ import styles from "./SentimentIndicator.module.scss";
 import GaugeChart from "react-gauge-chart";
 import { ISentimentIndicatorProps } from "./ISentimentIndicatorProps";
 import { ISentiment } from "../../../../models/ISentiment";
+import { Icon } from "office-ui-fabric-react/lib/Icon";
 
 export const SentimentIndicator: React.SFC<ISentimentIndicatorProps> = (props: ISentimentIndicatorProps) => {
 
@@ -22,9 +23,20 @@ export const SentimentIndicator: React.SFC<ISentimentIndicatorProps> = (props: I
   return (
     <div className={styles.sentimentIndicator}>
       <div className={styles.indicator}>
+        {props.sentiments.map((s: ISentiment) => {
+          return (
+            <Icon iconName={s.iconName} style={{ left: s.iconPositionLeft, top: s.iconPositionTop }} />
+          );
+        })}
         <GaugeChart
-          id="gauge-chart1"
+          id="sentiementIndicator"
           nrOfLevels={5}
+          colors={props.sentiments.map((s) => s.color)}
+          hideText={true}
+          arcPadding={0}
+          cornerRadius={0}
+          arcWidth={0.2}
+          animDelay={0}
           percent={props.indicatorValue.average / 100}
         />
       </div>

@@ -4,4 +4,7 @@ export interface ISentiment {
   value: number;
   iconName: string;
   needsExplanation: boolean;
+  color: string;
+  iconPositionLeft: string;
+  iconPositionTop: string;
 }

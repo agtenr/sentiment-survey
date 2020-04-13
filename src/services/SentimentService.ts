@@ -124,7 +124,7 @@ export class SentimentService implements ISentimentService {
 
   private _getDateFilter = (scopeType: ScopeType): string => {
     let query: string = "";
-    const dateField = "sentimentSurveyDate";
+    const dateField = "Created";
     const today: Date = new Date();
     switch (scopeType) {
       case ScopeType.Today:

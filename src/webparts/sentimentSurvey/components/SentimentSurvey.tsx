@@ -41,7 +41,15 @@ export default class SentimentSurvey extends React.Component<ISentimentSurveyPro
   }
 
   public componentDidMount() {
-    this._initialLoad();
+    if (this.props.listId) {
+      this._initialLoad();
+    }
+  }
+
+  public componentDidUpdate(prevProps: ISentimentSurveyProps) {
+    if (this.props.listId !== prevProps.listId) {
+      this._initialLoad();
+    }
   }
 
   public render(): React.ReactElement<ISentimentSurveyProps> {
@@ -233,35 +241,50 @@ export default class SentimentSurvey extends React.Component<ISentimentSurveyPro
         name: "I can't handle this!",
         value: 20,
         iconName: "EmojiDisappointed",
-        needsExplanation: true
+        needsExplanation: true,
+        color: "#f00",
+        iconPositionLeft: "8%",
+        iconPositionTop: "60%"
       },
       {
         key: "2",
         name: "I've felt better",
         value: 40,
         iconName: "Sad",
-        needsExplanation: false
+        needsExplanation: false,
+        color: "#ff8000",
+        iconPositionLeft: "20%",
+        iconPositionTop: "20%"
       },
       {
         key: "3",
         name: "Okay, I guess..",
         value: 60,
         iconName: "EmojiNeutral",
-        needsExplanation: false
+        needsExplanation: false,
+        color: "#ff0",
+        iconPositionLeft: "calc(50% - 12px)",
+        iconPositionTop: "0"
       },
       {
         key: "4",
         name: "Pretty good!",
         value: 80,
         iconName: "Emoji2",
-        needsExplanation: false
+        needsExplanation: false,
+        color: "#80ff00",
+        iconPositionLeft: "calc(80% - 24px)",
+        iconPositionTop: "20%"
       },
       {
         key: "5",
         name: "Awesome",
         value: 100,
         iconName: "Emoji",
-        needsExplanation: false
+        needsExplanation: false,
+        color: "#0f0",
+        iconPositionLeft: "calc(92% - 24px)",
+        iconPositionTop: "60%"
       },
     ];
   }
