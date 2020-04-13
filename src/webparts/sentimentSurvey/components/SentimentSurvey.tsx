@@ -11,14 +11,17 @@ import { Spinner, SpinnerSize } from 'office-ui-fabric-react/lib/Spinner';
 
 import { ISentimentValue } from "../../../models/ISentimentValue";
 import { ISentiment } from "../../../models/ISentiment";
-import { IIndicatorScope } from "../../../models/IIndicatorScope";
+import { IIndicatorScope, ScopeType } from "../../../models/IIndicatorScope";
 import { IIndicatorResult } from "../../../models/IIndicatorResult";
 
 import { ISentimentService } from "../../../services/ISentimentService";
 import { SentimentService } from "../../../services/SentimentService";
 
-import { SentimentSelector } from "./sentimentSelector/SentimentSelector";
 import { SentimentCommentDialog } from "./sentimentCommentDialog/SentimentCommentDialog";
+import { SentimentIndicator } from "./sentimentIndicator/SentimentIndicator";
+import { SentimentScopeSelector } from "./sentimentScopeSelector/SentimentScopeSelector";
+import { SentimentSelector } from "./sentimentSelector/SentimentSelector";
+
 
 export default class SentimentSurvey extends React.Component<ISentimentSurveyProps, ISentimentSurveyState> {
 
@@ -32,7 +35,7 @@ export default class SentimentSurvey extends React.Component<ISentimentSurveyPro
       showSentimentSelector: false,
       myCurrentSentiment: undefined,
       selectedSentiment: undefined,
-      selectedScope: this._getSentiments()[0],
+      selectedScope: this._getScopes()[0],
       indicatorValue: undefined
     };
   }
@@ -76,9 +79,11 @@ export default class SentimentSurvey extends React.Component<ISentimentSurveyPro
         <div>
           {this.state.myCurrentSentiment && !this.state.showSentimentSelector ? (
             <div>
-              <div>{`Current mood: '${this.state.indicatorValue.average}'`}</div>
-              <div>{`${this.state.indicatorValue.count} delawarians have answered`}</div>
-              <Link onClick={this._onShowSentimentSelector}>Change my sentiment</Link>
+              <SentimentScopeSelector scopes={this._getScopes()} selectedScope={this.state.selectedScope} onScopeChange={this._onUpdateScope}/>
+              <SentimentIndicator indicatorValue={this.state.indicatorValue} sentiments={this._getSentiments()}/>
+              <div className={styles.changeLink}>
+                <Link onClick={this._onShowSentimentSelector}>Change my sentiment</Link>
+              </div>
             </div>
           ) : (
             <SentimentSelector
@@ -119,7 +124,7 @@ export default class SentimentSurvey extends React.Component<ISentimentSurveyPro
   }
   private _getInitcatorData = async (): Promise<IIndicatorResult> => {
     const sentimentSurvey: ISentimentService = new SentimentService(this.props.listId);
-    const indicatorResult = await sentimentSurvey.getIndicatorData();
+    const indicatorResult = await sentimentSurvey.getIndicatorData(this.state.selectedScope.scopeType);
     return indicatorResult;
   }
 
@@ -177,6 +182,16 @@ export default class SentimentSurvey extends React.Component<ISentimentSurveyPro
       });
     }
 
+  }
+  private _onUpdateScope = async (newScope: IIndicatorScope): Promise<void> => {
+    this.setState({
+      isLoading: true,
+      selectedScope: newScope
+    }, async () => {
+
+      const indicatorValue = await this._getInitcatorData();
+      this.setState({ indicatorValue, isLoading: false });
+    });
   }
 
   private _renderNoListId = (): JSX.Element => {
@@ -252,11 +267,11 @@ export default class SentimentSurvey extends React.Component<ISentimentSurveyPro
   }
   private _getScopes = (): IIndicatorScope[] => {
     return [
-      { key: "today", name: "Today" },
-      { key: "yesterday", name: "Yesterday" },
-      { key: "thisWeek", name: "This week" },
-      { key: "thisMonth", name: "This month" },
-      { key: "thisYeas", name: "This year" },
+      { scopeType: ScopeType.Today, key: "today", name: "Today" },
+      { scopeType: ScopeType.YesterDay, key: "yesterday", name: "Yesterday" },
+      { scopeType: ScopeType.ThisWeek, key: "thisWeek", name: "This week" },
+      { scopeType: ScopeType.ThisMonth, key: "thisMonth", name: "This month" },
+      { scopeType: ScopeType.ThisYear, key: "thisYeas", name: "This year" },
     ];
   }
 }

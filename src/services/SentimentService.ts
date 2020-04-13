@@ -8,6 +8,7 @@ import { ISentimentService } from "./ISentimentService";
 import { ISentimentValue } from "../models/ISentimentValue";
 import { IIndicatorResult } from "../models/IIndicatorResult";
 import { IStreamResult } from "../models/IStreamResult";
+import { ScopeType } from "../models/IIndicatorScope";
 
 export class SentimentService implements ISentimentService {
 
@@ -68,11 +69,17 @@ export class SentimentService implements ISentimentService {
     };
   }
 
-  public async getIndicatorData(): Promise<IIndicatorResult> {
+  public async getIndicatorData(scopeType: ScopeType): Promise<IIndicatorResult> {
+    const scope: ScopeType = scopeType;
     const averageViewXml =
       `<View>` +
         `<ViewFields></ViewFields>` +
         `<RowLimit>1</RowLimit>` +
+        `<Query>` +
+          `<Where>` +
+            `${this._getDateFilter(scope)}` +
+          `</Where>` +
+        `</Query>` +
         `<Aggregations>` +
           `<FieldRef Name="sentimentSurveySentiment" Type="AVG" />` +
         `</Aggregations>` +
@@ -82,6 +89,11 @@ export class SentimentService implements ISentimentService {
       `<View>` +
         `<ViewFields></ViewFields>` +
         `<RowLimit>1</RowLimit>` +
+        `<Query>` +
+          `<Where>` +
+            `${this._getDateFilter(scope)}` +
+          `</Where>` +
+        `</Query>` +
         `<Aggregations>` +
           `<FieldRef Name="sentimentSurveySentiment" Type="COUNT" />` +
         `</Aggregations>` +
@@ -95,11 +107,11 @@ export class SentimentService implements ISentimentService {
     let count = 0;
 
     if (averageResult && averageResult.Row && averageResult.Row.length > 0) {
-      average = averageResult.Row[0]["sentimentSurveySentiment.AVG"];
+      average = parseFloat(averageResult.Row[0]["sentimentSurveySentiment.AVG"]);
     }
 
     if (countResult && countResult.Row && countResult.Row.length > 0) {
-      count = countResult.Row[0]["sentimentSurveySentiment.COUNT"];
+      count = parseFloat(countResult.Row[0]["sentimentSurveySentiment.COUNT"]);
     }
 
     const result: IIndicatorResult = {
@@ -108,5 +120,58 @@ export class SentimentService implements ISentimentService {
     };
 
     return result;
+  }
+
+  private _getDateFilter = (scopeType: ScopeType): string => {
+    let query: string = "";
+    const dateField = "sentimentSurveyDate";
+    const today: Date = new Date();
+    switch (scopeType) {
+      case ScopeType.Today:
+        query =
+          `<Eq>` +
+            `<FieldRef Name="${dateField}"/>` +
+            `<Value Type='DateTime'><Today /></Value>` +
+          `</Eq>`;
+          break;
+      case ScopeType.YesterDay:
+        query =
+          `<Eq>` +
+            `<FieldRef Name="${dateField}"/>` +
+            `<Value Type='DateTime'><Today OffsetDays="-1"/></Value>` +
+          `</Eq>`;
+        break;
+      case ScopeType.ThisWeek:
+        query =
+          `<Gt>` +
+            `<FieldRef Name="${dateField}"/>` +
+            `<Value Type='DateTime'><Today OffsetDays="-${today.getDay()}"/></Value>` +
+          `</Gt>`;
+        break;
+      case ScopeType.ThisMonth:
+        query =
+          `<Gt>` +
+            `<FieldRef Name="${dateField}"/>` +
+            `<Value Type='DateTime'><Today OffsetDays="-${today.getDate()}"/></Value>` +
+          `</Gt>`;
+        break;
+      case ScopeType.ThisYear:
+        query =
+          `<Gt>` +
+            `<FieldRef Name="${dateField}"/>` +
+            `<Value Type='DateTime'><Today OffsetDays="-${this._getDayOfYear()}"/></Value>` +
+          `</Gt>`;
+        break;
+    }
+    return query;
+  }
+
+  private _getDayOfYear = (): number => {
+    const now: any = new Date();
+    const start: any = new Date(now.getFullYear(), 0, 0);
+    const diff = (now - start) + ((start.getTimezoneOffset() - now.getTimezoneOffset()) * 60 * 1000);
+    var oneDay = 1000 * 60 * 60 * 24;
+    var day = Math.floor(diff / oneDay);
+    return day;
   }
 }
