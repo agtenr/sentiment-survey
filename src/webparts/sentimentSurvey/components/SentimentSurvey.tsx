@@ -5,7 +5,7 @@ import { ISentimentSurveyState } from "./ISentimentSurveyState";
 import { DisplayMode } from "@microsoft/sp-core-library";
 import { Placeholder } from "@pnp/spfx-controls-react/lib/Placeholder";
 
-import { Label } from "office-ui-fabric-react/lib/LabeL";
+import { Label } from "office-ui-fabric-react/lib/Label";
 import { Link } from "office-ui-fabric-react/lib/Link";
 import { MessageBar, MessageBarType } from "office-ui-fabric-react/lib/MessageBar";
 import { Spinner, SpinnerSize } from 'office-ui-fabric-react/lib/Spinner';
