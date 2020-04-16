@@ -6,19 +6,16 @@ import { ISentiment } from "../../../../models/ISentiment";
 import { Icon } from "office-ui-fabric-react/lib/Icon";
 
 export const SentimentIndicator: React.SFC<ISentimentIndicatorProps> = (props: ISentimentIndicatorProps) => {
+  // Set sentiment to highest value
+  let selectedSentiment: ISentiment = props.sentiments[props.sentiments.length - 1];
+  props.sentiments.every((s: ISentiment) => {
+    if (props.indicatorValue.average <= s.value) {
+      selectedSentiment = s;
+      return false;
+    }
+    return true;
+  });
 
-  const getSentimentName = (): string => {
-    // Set sentiment to highest value
-    let sentiment: string = props.sentiments[props.sentiments.length - 1].name;
-    props.sentiments.every((s: ISentiment) => {
-      if (props.indicatorValue.average <= s.value) {
-        sentiment = s.name;
-        return false;
-      }
-      return true;
-    });
-    return sentiment;
-  };
 
   return (
     <div className={styles.sentimentIndicator}>
@@ -42,9 +39,9 @@ export const SentimentIndicator: React.SFC<ISentimentIndicatorProps> = (props: I
       </div>
 
       <div className={styles.info}>
-        <span>Today the people of delaware are feeling:</span>
+        <span>{props.selectedScope.indicatorText}</span>
         <div>
-          <strong>{getSentimentName()}</strong>
+          <strong>{selectedSentiment.name}</strong>
         </div>
       </div>
 

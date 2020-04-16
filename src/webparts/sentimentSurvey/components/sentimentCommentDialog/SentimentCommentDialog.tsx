@@ -22,21 +22,19 @@ export class SentimentCommentDialog extends React.Component<ISentimentCommentDia
         onDismiss={this.props.onDismiss}
         dialogContentProps={{
           type: DialogType.normal,
-          title: "Please provide a reason"
+          title: "What makes you feel this way"
         }}
         modalProps={{
           isBlocking: true,
         }}
       >
         <TextField
-          label="Reason"
-          required={true}
           value={this.state.commentText}
           onChange={this._onTextChange}
         />
         <DialogFooter>
-          <PrimaryButton onClick={() => this.props.onSave(this.props.sentiment, this.state.commentText)} text="Save" disabled={!!!this.state.commentText}/>
-          <DefaultButton onClick={this.props.onDismiss} text="Cancel" />
+          <DefaultButton onClick={() => this.props.onSave(this.props.sentiment, "")} text="Skip" />
+          <PrimaryButton onClick={() => this.props.onSave(this.props.sentiment, this.state.commentText)} text="Save"/>
         </DialogFooter>
       </Dialog>
     );

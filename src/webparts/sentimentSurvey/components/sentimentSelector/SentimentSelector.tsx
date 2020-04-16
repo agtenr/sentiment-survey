@@ -1,4 +1,5 @@
 import * as React from "react";
+import styles from "../SentimentSurvey.module.scss";
 import { ISentimentSelectorProps } from "./ISentimentSelectorProps";
 import { ChoiceGroup, IChoiceGroupOption } from 'office-ui-fabric-react/lib/ChoiceGroup';
 import { ISentiment } from "../../../../models/ISentiment";
@@ -27,6 +28,7 @@ export const SentimentSelector: React.SFC<ISentimentSelectorProps> = (props: ISe
 
   return (
     <ChoiceGroup
+      className={styles.sentimentSelector}
       label={props.title}
       options={options}
       selectedKey={selectedKey}

@@ -1,6 +1,7 @@
 export interface IIndicatorScope {
   key: string;
   name: string;
+  indicatorText: string;
   scopeType: ScopeType;
 }
 

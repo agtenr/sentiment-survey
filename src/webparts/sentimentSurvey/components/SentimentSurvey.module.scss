@@ -4,4 +4,41 @@
     margin-top: 20px;
     text-decoration: underline;
   }
+  .indicatorTitle {
+    padding-left: 5px;
+    font-weight: bold;
+  }
+  .sentimentSelector {
+    > div {
+      > label {
+        padding-left: 5px;
+      }
+      > div {
+        display: block;
+        text-align: center;
+        > div {
+          > div {
+            width: 70px;
+            label {
+              padding-top: 10px;
+              i {
+                font-size: 26px;
+              }
+              div:nth-child(2) {
+                height: 50px;
+              }
+            }
+            label::before {
+              width: 16px;
+              height: 16px;
+            }
+            label::after {
+              top: 6px;
+              right: 6px;
+            }
+          }
+        }
+      }
+    }
+  }
 }

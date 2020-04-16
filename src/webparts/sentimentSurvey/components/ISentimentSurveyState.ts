@@ -8,6 +8,7 @@ export interface ISentimentSurveyState {
   isUpdatingSentiment: boolean;
   showCommentsDialog: boolean;
   showSentimentSelector: boolean;
+  showSentimentIndicator: boolean;
   myCurrentSentiment: ISentimentValue;
   selectedSentiment: ISentiment;
   selectedScope: IIndicatorScope;

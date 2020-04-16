@@ -5,6 +5,7 @@ import { ISentimentSurveyState } from "./ISentimentSurveyState";
 import { DisplayMode } from "@microsoft/sp-core-library";
 import { Placeholder } from "@pnp/spfx-controls-react/lib/Placeholder";
 
+import { Label } from "office-ui-fabric-react/lib/LabeL";
 import { Link } from "office-ui-fabric-react/lib/Link";
 import { MessageBar, MessageBarType } from "office-ui-fabric-react/lib/MessageBar";
 import { Spinner, SpinnerSize } from 'office-ui-fabric-react/lib/Spinner';
@@ -33,6 +34,7 @@ export default class SentimentSurvey extends React.Component<ISentimentSurveyPro
       isUpdatingSentiment: false,
       showCommentsDialog: false,
       showSentimentSelector: false,
+      showSentimentIndicator: true,
       myCurrentSentiment: undefined,
       selectedSentiment: undefined,
       selectedScope: this._getScopes()[0],
@@ -85,21 +87,25 @@ export default class SentimentSurvey extends React.Component<ISentimentSurveyPro
     return (
       <div className={styles.sentimentSurvey}>
         <div>
-          {this.state.myCurrentSentiment && !this.state.showSentimentSelector ? (
-            <div>
-              <SentimentScopeSelector scopes={this._getScopes()} selectedScope={this.state.selectedScope} onScopeChange={this._onUpdateScope}/>
-              <SentimentIndicator indicatorValue={this.state.indicatorValue} sentiments={this._getSentiments()}/>
-              <div className={styles.changeLink}>
-                <Link onClick={this._onShowSentimentSelector}>Change my sentiment</Link>
-              </div>
-            </div>
-          ) : (
+          {this.state.showSentimentSelector && (
             <SentimentSelector
               sentiments={this._getSentiments()}
               selectedSentiment={this.state.selectedSentiment}
               title={"How are you coping with the confinement today?"}
               onUpdateSentiment={this._onUpdateSentiment}
             />
+          )}
+          {this.state.showSentimentIndicator && (
+            <div>
+              <Label className={styles.indicatorTitle}>How are the people of delaware coping with the confinement?</Label>
+              <SentimentScopeSelector scopes={this._getScopes()} selectedScope={this.state.selectedScope} onScopeChange={this._onUpdateScope}/>
+              <SentimentIndicator selectedScope={this.state.selectedScope} indicatorValue={this.state.indicatorValue} sentiments={this._getSentiments()}/>
+              {this.state.myCurrentSentiment && (
+                <div className={styles.changeLink}>
+                  <Link onClick={this._onShowSentimentSelector}>Change my sentiment</Link>
+                </div>
+              )}
+            </div>
           )}
         </div>
         <div>
@@ -117,18 +123,24 @@ export default class SentimentSurvey extends React.Component<ISentimentSurveyPro
   private _initialLoad = async (): Promise<void> => {
     const sentimentSurvey: ISentimentService = new SentimentService(this.props.listId);
     const myCurrentSentiment: ISentimentValue = await sentimentSurvey.getMySentiment();
-
-    this.setState({ myCurrentSentiment }, async () => {
-      if (myCurrentSentiment) {
-        const indicatorValue = await this._getInitcatorData();
-        this.setState({
-          indicatorValue,
-          isLoading: false
-        });
-      } else {
-        this.setState({ isLoading: false });
-      }
+    const indicatorValue = await this._getInitcatorData();
+    this.setState({
+      myCurrentSentiment,
+      indicatorValue,
+      isLoading: false,
+      showSentimentSelector: !myCurrentSentiment
     });
+    // this.setState({ myCurrentSentiment }, async () => {
+    //   if (myCurrentSentiment) {
+    //     const indicatorValue = await this._getInitcatorData();
+    //     this.setState({
+    //       indicatorValue,
+    //       isLoading: false
+    //     });
+    //   } else {
+    //     this.setState({ isLoading: false });
+    //   }
+    // });
   }
   private _getInitcatorData = async (): Promise<IIndicatorResult> => {
     const sentimentSurvey: ISentimentService = new SentimentService(this.props.listId);
@@ -150,7 +162,8 @@ export default class SentimentSurvey extends React.Component<ISentimentSurveyPro
         this.setState({
           isUpdatingSentiment: false,
           myCurrentSentiment: newSentiment,
-          showSentimentSelector: false,
+          showSentimentSelector: !newSentiment,
+          showSentimentIndicator: true,
           indicatorValue
         });
       } else {
@@ -160,6 +173,8 @@ export default class SentimentSurvey extends React.Component<ISentimentSurveyPro
         this.setState({
           isUpdatingSentiment: false,
           myCurrentSentiment: newSentiment,
+          showSentimentSelector: !newSentiment,
+          showSentimentIndicator: true,
           indicatorValue
         });
       }
@@ -175,7 +190,8 @@ export default class SentimentSurvey extends React.Component<ISentimentSurveyPro
       this.setState({
         isUpdatingSentiment: false,
         myCurrentSentiment: newSentiment,
-        showSentimentSelector: false,
+        showSentimentSelector: !newSentiment,
+        showSentimentIndicator: true,
         indicatorValue
       });
     } else {
@@ -186,11 +202,14 @@ export default class SentimentSurvey extends React.Component<ISentimentSurveyPro
       this.setState({
         isUpdatingSentiment: false,
         myCurrentSentiment: newSentiment,
+        showSentimentSelector: !newSentiment,
+        showSentimentIndicator: true,
         indicatorValue
       });
     }
 
   }
+
   private _onUpdateScope = async (newScope: IIndicatorScope): Promise<void> => {
     this.setState({
       isLoading: true,
@@ -230,7 +249,7 @@ export default class SentimentSurvey extends React.Component<ISentimentSurveyPro
     const sentiments = this._getSentiments();
     if (sentiments.some((s) => s.value === this.state.myCurrentSentiment.sentimentSurveySentiment)) {
       const selectedSentiment = sentiments.filter((s) => s.value === this.state.myCurrentSentiment.sentimentSurveySentiment)[0];
-      this.setState({ showSentimentSelector: true, selectedSentiment });
+      this.setState({ showSentimentSelector: true, showSentimentIndicator: false, selectedSentiment });
     }
   }
 
@@ -251,7 +270,7 @@ export default class SentimentSurvey extends React.Component<ISentimentSurveyPro
         name: "I've felt better",
         value: 40,
         iconName: "Sad",
-        needsExplanation: false,
+        needsExplanation: true,
         color: "#ff8000",
         iconPositionLeft: "20%",
         iconPositionTop: "20%"
@@ -290,11 +309,11 @@ export default class SentimentSurvey extends React.Component<ISentimentSurveyPro
   }
   private _getScopes = (): IIndicatorScope[] => {
     return [
-      { scopeType: ScopeType.Today, key: "today", name: "Today" },
-      { scopeType: ScopeType.YesterDay, key: "yesterday", name: "Yesterday" },
-      { scopeType: ScopeType.ThisWeek, key: "thisWeek", name: "This week" },
-      { scopeType: ScopeType.ThisMonth, key: "thisMonth", name: "This month" },
-      { scopeType: ScopeType.ThisYear, key: "thisYeas", name: "This year" },
+      { scopeType: ScopeType.Today, key: "today", name: "Today", indicatorText: "Today the people of delaware are feeling:" },
+      { scopeType: ScopeType.YesterDay, key: "yesterday", name: "Yesterday", indicatorText: "Yesterday the people of delaware were feeling:" },
+      { scopeType: ScopeType.ThisWeek, key: "thisWeek", name: "This week", indicatorText: "This week the people of delaware are feeling:" },
+      { scopeType: ScopeType.ThisMonth, key: "thisMonth", name: "This month", indicatorText: "This month the people of delaware are feeling:" },
+      { scopeType: ScopeType.ThisYear, key: "thisYeas", name: "This year", indicatorText: "This year the people of delaware are feeling:" },
     ];
   }
 }
