@@ -9,7 +9,9 @@ import SentimentSurvey from "./components/SentimentSurvey";
 import { ISentimentSurveyProps } from "./components/ISentimentSurveyProps";
 
 export interface ISentimentSurveyWebPartProps {
+  title: string;
   listId: string;
+
 }
 
 export default class SentimentSurveyWebPart extends BaseClientSideWebPart <ISentimentSurveyWebPartProps> {
@@ -19,6 +21,10 @@ export default class SentimentSurveyWebPart extends BaseClientSideWebPart <ISent
       SentimentSurvey,
       {
         displayMode: this.displayMode,
+        title: this.properties.title,
+        updateProperty: (value: string) => {
+          this.properties.title = value;
+        },
         listId: this.properties.listId,
         userLogin: this.context.pageContext.user.loginName,
         onConfigure: this._onConfigure

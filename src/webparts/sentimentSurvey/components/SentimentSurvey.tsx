@@ -4,6 +4,7 @@ import { ISentimentSurveyProps } from "./ISentimentSurveyProps";
 import { ISentimentSurveyState } from "./ISentimentSurveyState";
 import { DisplayMode } from "@microsoft/sp-core-library";
 import { Placeholder } from "@pnp/spfx-controls-react/lib/Placeholder";
+import { WebPartTitle } from "@pnp/spfx-controls-react/lib/WebPartTitle";
 
 import { Label } from "office-ui-fabric-react/lib/Label";
 import { Link } from "office-ui-fabric-react/lib/Link";
@@ -86,6 +87,11 @@ export default class SentimentSurvey extends React.Component<ISentimentSurveyPro
 
     return (
       <div className={styles.sentimentSurvey}>
+        <WebPartTitle
+          displayMode={this.props.displayMode}
+          title={this.props.title}
+          updateProperty={this.props.updateProperty}
+        />
         <div>
           {this.state.showSentimentSelector && (
             <SentimentSelector

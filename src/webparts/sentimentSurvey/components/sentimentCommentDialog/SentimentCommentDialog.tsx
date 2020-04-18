@@ -22,7 +22,7 @@ export class SentimentCommentDialog extends React.Component<ISentimentCommentDia
         onDismiss={this.props.onDismiss}
         dialogContentProps={{
           type: DialogType.normal,
-          title: "What makes you feel this way"
+          title: "What makes you feel this way?"
         }}
         modalProps={{
           isBlocking: true,
