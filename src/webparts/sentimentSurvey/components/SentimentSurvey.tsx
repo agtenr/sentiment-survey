@@ -68,19 +68,25 @@ export default class SentimentSurvey extends React.Component<ISentimentSurveyPro
 
     if (this.state.isLoading) {
       return (
-        <Spinner
-          label={"Loading Sentiment Survey"}
-          size={SpinnerSize.medium}
-        />
+        <div>
+          {this._renderTitle()}
+          <Spinner
+            label={"Loading Sentiment Survey"}
+            size={SpinnerSize.medium}
+          />
+        </div>
       );
     }
 
     if (this.state.isUpdatingSentiment) {
       return (
-        <Spinner
-          label={"Updating your sentiment..."}
-          size={SpinnerSize.medium}
-        />
+        <div>
+          {this._renderTitle()}
+          <Spinner
+            label={"Updating your sentiment..."}
+            size={SpinnerSize.medium}
+          />
+        </div>
       );
     }
 
@@ -242,6 +248,15 @@ export default class SentimentSurvey extends React.Component<ISentimentSurveyPro
         description='Please provide a list for the survey in the web part properties'
         buttonLabel='Configure'
         onConfigure={this.props.onConfigure} />
+    );
+  }
+  private _renderTitle = (): JSX.Element => {
+    return (
+      <WebPartTitle
+        displayMode={this.props.displayMode}
+        title={this.props.title}
+        updateProperty={this.props.updateProperty}
+      />
     );
   }
   private _closeDialog = (): void => {
