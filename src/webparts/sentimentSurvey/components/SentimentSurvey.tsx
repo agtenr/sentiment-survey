@@ -24,6 +24,18 @@ import { SentimentIndicator } from "./sentimentIndicator/SentimentIndicator";
 import { SentimentScopeSelector } from "./sentimentScopeSelector/SentimentScopeSelector";
 import { SentimentSelector } from "./sentimentSelector/SentimentSelector";
 
+import "@pnp/polyfill-ie11";
+import 'core-js/fn/array/from';
+import 'core-js/fn/number/is-finite';
+import 'core-js/fn/reflect';
+import 'core-js/fn/symbol';
+import 'core-js/es6/symbol';
+import 'core-js/fn/array/from';
+import 'core-js/fn/number/is-finite';
+import 'core-js/fn/reflect';
+import 'core-js/fn/symbol/iterator.js';
+import 'core-js/es7/reflect';
+import 'core-js/es6/reflect';
 
 export default class SentimentSurvey extends React.Component<ISentimentSurveyProps, ISentimentSurveyState> {
 
@@ -103,13 +115,13 @@ export default class SentimentSurvey extends React.Component<ISentimentSurveyPro
             <SentimentSelector
               sentiments={this._getSentiments()}
               selectedSentiment={this.state.selectedSentiment}
-              title={"How are you coping with the confinement today?"}
+              title={this.props.surveyTitle}
               onUpdateSentiment={this._onUpdateSentiment}
             />
           )}
           {this.state.showSentimentIndicator && (
             <div>
-              <Label className={styles.indicatorTitle}>How are the people of delaware coping with the confinement?</Label>
+              <Label className={styles.indicatorTitle}>{this.props.indicatorTitle}</Label>
               <SentimentScopeSelector scopes={this._getScopes()} selectedScope={this.state.selectedScope} onScopeChange={this._onUpdateScope}/>
               <SentimentIndicator selectedScope={this.state.selectedScope} indicatorValue={this.state.indicatorValue} sentiments={this._getSentiments()}/>
               {this.state.myCurrentSentiment && (

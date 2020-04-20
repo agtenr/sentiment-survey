@@ -21,7 +21,8 @@
     "description": { "default": "Capture the sentiment of the user and get an average number on the sentiment" },
     "officeFabricIconFontName": "Page",
     "properties": {
-      "description": "Sentiment Survey"
+      "indicatorTitle": "How are the people of delaware dealing with this situation?",
+      "surveyTitle": "How are you dealing with this situation today?"
     }
   }]
 }

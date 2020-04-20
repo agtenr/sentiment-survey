@@ -4,6 +4,8 @@ export interface ISentimentSurveyProps {
   title: string;
   listId: string;
   userLogin: string;
+  surveyTitle: string;
+  indicatorTitle: string;
   onConfigure(): void;
   updateProperty(value: string): void;
 }

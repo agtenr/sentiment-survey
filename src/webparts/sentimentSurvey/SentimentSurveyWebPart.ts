@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDom from "react-dom";
 import { Version } from "@microsoft/sp-core-library";
-import { IPropertyPaneConfiguration } from "@microsoft/sp-property-pane";
+import { IPropertyPaneConfiguration, PropertyPaneTextField } from "@microsoft/sp-property-pane";
 import { PropertyFieldListPicker, PropertyFieldListPickerOrderBy } from "@pnp/spfx-property-controls/lib/PropertyFieldListPicker";
 import { BaseClientSideWebPart } from "@microsoft/sp-webpart-base";
 import { sp } from "@pnp/sp/presets/all";
@@ -11,7 +11,8 @@ import { ISentimentSurveyProps } from "./components/ISentimentSurveyProps";
 export interface ISentimentSurveyWebPartProps {
   title: string;
   listId: string;
-
+  surveyTitle: string;
+  indicatorTitle: string;
 }
 
 export default class SentimentSurveyWebPart extends BaseClientSideWebPart <ISentimentSurveyWebPartProps> {
@@ -22,6 +23,8 @@ export default class SentimentSurveyWebPart extends BaseClientSideWebPart <ISent
       {
         displayMode: this.displayMode,
         title: this.properties.title,
+        surveyTitle: this.properties.surveyTitle,
+        indicatorTitle: this.properties.indicatorTitle,
         updateProperty: (value: string) => {
           this.properties.title = value;
         },
@@ -36,7 +39,12 @@ export default class SentimentSurveyWebPart extends BaseClientSideWebPart <ISent
 
   protected async onInit(): Promise<void> {
     await super.onInit();
-    sp.setup(this.context);
+    sp.setup({
+      // set ie 11 mode
+      ie11: true,
+      // only needed when working within SharePoint Framework
+      spfxContext: this.context
+    });
   }
 
   protected onDispose(): void {
@@ -70,6 +78,12 @@ export default class SentimentSurveyWebPart extends BaseClientSideWebPart <ISent
                   onGetErrorMessage: null,
                   deferredValidationTime: 0,
                   key: "listPickerFieldId"
+                }),
+                PropertyPaneTextField('surveyTitle', {
+                  label: "The title above the sentiment survey picker"
+                }),
+                PropertyPaneTextField('indicatorTitle', {
+                  label: "The title above the sentiment indicator"
                 })
               ]
             }
