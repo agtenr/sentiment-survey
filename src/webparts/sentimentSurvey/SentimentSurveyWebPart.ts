@@ -4,7 +4,7 @@ import { Version } from "@microsoft/sp-core-library";
 import { IPropertyPaneConfiguration, PropertyPaneTextField } from "@microsoft/sp-property-pane";
 import { PropertyFieldListPicker, PropertyFieldListPickerOrderBy } from "@pnp/spfx-property-controls/lib/PropertyFieldListPicker";
 import { BaseClientSideWebPart } from "@microsoft/sp-webpart-base";
-import { sp } from "@pnp/sp/presets/all";
+import { sp } from "@pnp/sp";
 import SentimentSurvey from "./components/SentimentSurvey";
 import { ISentimentSurveyProps } from "./components/ISentimentSurveyProps";
 

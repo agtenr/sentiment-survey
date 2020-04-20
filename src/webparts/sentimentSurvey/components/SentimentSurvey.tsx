@@ -24,19 +24,6 @@ import { SentimentIndicator } from "./sentimentIndicator/SentimentIndicator";
 import { SentimentScopeSelector } from "./sentimentScopeSelector/SentimentScopeSelector";
 import { SentimentSelector } from "./sentimentSelector/SentimentSelector";
 
-import "@pnp/polyfill-ie11";
-import 'core-js/fn/array/from';
-import 'core-js/fn/number/is-finite';
-import 'core-js/fn/reflect';
-import 'core-js/fn/symbol';
-import 'core-js/es6/symbol';
-import 'core-js/fn/array/from';
-import 'core-js/fn/number/is-finite';
-import 'core-js/fn/reflect';
-import 'core-js/fn/symbol/iterator.js';
-import 'core-js/es7/reflect';
-import 'core-js/es6/reflect';
-
 export default class SentimentSurvey extends React.Component<ISentimentSurveyProps, ISentimentSurveyState> {
 
   constructor(props: ISentimentSurveyProps) {

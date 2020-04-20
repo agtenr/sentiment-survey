@@ -1,8 +1,9 @@
+import "@pnp/polyfill-ie11";
+
 import { sp } from "@pnp/sp";
 import "@pnp/sp/webs";
 import "@pnp/sp/lists/web";
 import "@pnp/sp/items";
-import "@pnp/polyfill-ie11";
 
 import { IItemAddResult, IItemUpdateResult } from "@pnp/sp/items";
 
