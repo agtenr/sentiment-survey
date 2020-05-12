@@ -51,7 +51,7 @@ export class SentimentCommentDialog extends React.Component<ISentimentCommentDia
           {this.props.commentDialogCategoryText}
         </div>
         <Dropdown
-          placeholder="Select an option"
+          placeholder="Select a category"
           options={options}
           onChange={(this._onDropdownChange)}
         />
