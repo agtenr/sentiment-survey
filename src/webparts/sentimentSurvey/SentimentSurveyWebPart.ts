@@ -11,8 +11,11 @@ import { ISentimentSurveyProps } from "./components/ISentimentSurveyProps";
 export interface ISentimentSurveyWebPartProps {
   title: string;
   listId: string;
+  categoryListId: string;
   surveyTitle: string;
   indicatorTitle: string;
+  commentDialogCategoryText: string;
+  commentDialogHelpHtml: string;
 }
 
 export default class SentimentSurveyWebPart extends BaseClientSideWebPart <ISentimentSurveyWebPartProps> {
@@ -25,10 +28,13 @@ export default class SentimentSurveyWebPart extends BaseClientSideWebPart <ISent
         title: this.properties.title,
         surveyTitle: this.properties.surveyTitle,
         indicatorTitle: this.properties.indicatorTitle,
+        commentDialogCategoryText: this.properties.commentDialogCategoryText,
+        commentDialogHelpHtml: this.properties.commentDialogHelpHtml,
         updateProperty: (value: string) => {
           this.properties.title = value;
         },
         listId: this.properties.listId,
+        categoryListId: this.properties.categoryListId,
         userLogin: this.context.pageContext.user.loginName,
         onConfigure: this._onConfigure
       }
@@ -79,12 +85,32 @@ export default class SentimentSurveyWebPart extends BaseClientSideWebPart <ISent
                   deferredValidationTime: 0,
                   key: "listPickerFieldId"
                 }),
+                PropertyFieldListPicker("categoryListId", {
+                  label: "Select a categories list",
+                  selectedList: this.properties.categoryListId,
+                  includeHidden: false,
+                  orderBy: PropertyFieldListPickerOrderBy.Title,
+                  disabled: false,
+                  onPropertyChange: this.onPropertyPaneFieldChanged.bind(this),
+                  properties: this.properties,
+                  context: this.context,
+                  onGetErrorMessage: null,
+                  deferredValidationTime: 0,
+                  key: "listCategoryPickerFieldId"
+                }),
                 PropertyPaneTextField('surveyTitle', {
                   label: "The title above the sentiment survey picker"
                 }),
                 PropertyPaneTextField('indicatorTitle', {
                   label: "The title above the sentiment indicator"
+                }),
+                PropertyPaneTextField('commentDialogCategoryText', {
+                  label: "The text above the sentiment comment feedback dialog category selector"
+                }),
+                PropertyPaneTextField('commentDialogHelpHtml', {
+                  label: "The help text in the sentiment comment feedback dialog"
                 })
+
               ]
             }
           ]

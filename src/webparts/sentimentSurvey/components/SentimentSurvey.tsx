@@ -38,7 +38,8 @@ export default class SentimentSurvey extends React.Component<ISentimentSurveyPro
       myCurrentSentiment: undefined,
       selectedSentiment: undefined,
       selectedScope: this._getScopes()[0],
-      indicatorValue: undefined
+      indicatorValue: undefined,
+      categories: []
     };
   }
 
@@ -57,7 +58,7 @@ export default class SentimentSurvey extends React.Component<ISentimentSurveyPro
   public render(): React.ReactElement<ISentimentSurveyProps> {
 
     // Check if list id is provided
-    if (!this.props.listId) {
+    if (!this.props.listId || !this.props.categoryListId) {
       if (this.props.displayMode === DisplayMode.Read) {
         return this._renderNoListId();
       } else {
@@ -123,6 +124,9 @@ export default class SentimentSurvey extends React.Component<ISentimentSurveyPro
           <SentimentCommentDialog
             sentiment={this.state.selectedSentiment}
             showCommentsDialog={this.state.showCommentsDialog}
+            commentDialogCategoryText={this.props.commentDialogCategoryText}
+            commentDialogHelpHtml={this.props.commentDialogHelpHtml}
+            categories={this.state.categories}
             onDismiss={this._closeDialog}
             onSave={this._onUpdateSentimentWithComment}
           />
@@ -135,23 +139,15 @@ export default class SentimentSurvey extends React.Component<ISentimentSurveyPro
     const sentimentSurvey: ISentimentService = new SentimentService(this.props.listId);
     const myCurrentSentiment: ISentimentValue = await sentimentSurvey.getMySentiment();
     const indicatorValue = await this._getInitcatorData();
+    const categories = await sentimentSurvey.getCategories(this.props.categoryListId);
+
     this.setState({
       myCurrentSentiment,
       indicatorValue,
       isLoading: false,
+      categories,
       showSentimentSelector: !myCurrentSentiment
     });
-    // this.setState({ myCurrentSentiment }, async () => {
-    //   if (myCurrentSentiment) {
-    //     const indicatorValue = await this._getInitcatorData();
-    //     this.setState({
-    //       indicatorValue,
-    //       isLoading: false
-    //     });
-    //   } else {
-    //     this.setState({ isLoading: false });
-    //   }
-    // });
   }
   private _getInitcatorData = async (): Promise<IIndicatorResult> => {
     const sentimentSurvey: ISentimentService = new SentimentService(this.props.listId);
@@ -168,7 +164,7 @@ export default class SentimentSurvey extends React.Component<ISentimentSurveyPro
       this.setState({ isUpdatingSentiment: true});
       if (this.state.myCurrentSentiment) {
         // Update current sentitment
-        const newSentiment: ISentimentValue = await sentimentSurvey.updateSentiment(this.state.myCurrentSentiment.ID, sentiment.value, "");
+        const newSentiment: ISentimentValue = await sentimentSurvey.updateSentiment(this.state.myCurrentSentiment.ID, sentiment.value, "", "");
         const indicatorValue = await this._getInitcatorData();
         this.setState({
           isUpdatingSentiment: false,
@@ -179,7 +175,7 @@ export default class SentimentSurvey extends React.Component<ISentimentSurveyPro
         });
       } else {
         // Craete new sentiment
-        const newSentiment: ISentimentValue = await sentimentSurvey.createSentiment(sentiment.value, "");
+        const newSentiment: ISentimentValue = await sentimentSurvey.createSentiment(sentiment.value, "", "");
         const indicatorValue = await this._getInitcatorData();
         this.setState({
           isUpdatingSentiment: false,
@@ -191,12 +187,13 @@ export default class SentimentSurvey extends React.Component<ISentimentSurveyPro
       }
     }
   }
-  private _onUpdateSentimentWithComment = async (sentiment: ISentiment, comment: string): Promise<void> => {
+  private _onUpdateSentimentWithComment = async (sentiment: ISentiment, comment: string, category: string): Promise<void> => {
     this.setState({ isUpdatingSentiment: true, showCommentsDialog: false});
     const sentimentSurvey: ISentimentService = new SentimentService(this.props.listId);
+
     if (this.state.myCurrentSentiment) {
       // Update current sentitment
-      const newSentiment: ISentimentValue = await sentimentSurvey.updateSentiment(this.state.myCurrentSentiment.ID, sentiment.value, comment);
+      const newSentiment: ISentimentValue = await sentimentSurvey.updateSentiment(this.state.myCurrentSentiment.ID, sentiment.value, comment, category);
       const indicatorValue = await this._getInitcatorData();
       this.setState({
         isUpdatingSentiment: false,
@@ -207,8 +204,7 @@ export default class SentimentSurvey extends React.Component<ISentimentSurveyPro
       });
     } else {
       // Craete new sentiment
-
-      const newSentiment: ISentimentValue = await sentimentSurvey.createSentiment(sentiment.value, comment);
+      const newSentiment: ISentimentValue = await sentimentSurvey.createSentiment(sentiment.value, comment, category);
       const indicatorValue = await this._getInitcatorData();
       this.setState({
         isUpdatingSentiment: false,

@@ -12,6 +12,7 @@ import { ISentimentValue } from "../models/ISentimentValue";
 import { IIndicatorResult } from "../models/IIndicatorResult";
 import { IStreamResult } from "../models/IStreamResult";
 import { ScopeType } from "../models/IIndicatorScope";
+import { ICategory } from "../models/ICategory";
 
 export class SentimentService implements ISentimentService {
 
@@ -48,10 +49,11 @@ export class SentimentService implements ISentimentService {
       return undefined;
     }
   }
-  public async createSentiment(value: number, comment: string): Promise<ISentimentValue> {
+  public async createSentiment(value: number, comment: string, category: string): Promise<ISentimentValue> {
     const result: IItemAddResult = await sp.web.lists.getById(this.surveyListId).items.add({
       sentimentSurveySentiment: value,
-      sentimentSurveyComment: comment
+      sentimentSurveyComment: comment,
+      sentimentSurveyCategory: category
     });
 
     return {
@@ -59,11 +61,12 @@ export class SentimentService implements ISentimentService {
       sentimentSurveySentiment: result.data.sentimentSurveySentiment
     };
   }
-  public async updateSentiment(id: number, value: number, comment: string): Promise<ISentimentValue> {
+  public async updateSentiment(id: number, value: number, comment: string, category: string): Promise<ISentimentValue> {
 
     const result: IItemUpdateResult = await sp.web.lists.getById(this.surveyListId).items.getById(id).update({
       sentimentSurveySentiment: value,
-      sentimentSurveyComment: comment
+      sentimentSurveyComment: comment,
+      sentimentSurveyCategory: category
     });
 
     return {
@@ -71,7 +74,6 @@ export class SentimentService implements ISentimentService {
       sentimentSurveySentiment: value
     };
   }
-
   public async getIndicatorData(scopeType: ScopeType): Promise<IIndicatorResult> {
     const scope: ScopeType = scopeType;
     const averageViewXml =
@@ -123,6 +125,15 @@ export class SentimentService implements ISentimentService {
     };
 
     return result;
+  }
+  public async getCategories(categoryListId: string): Promise<ICategory[]> {
+    const result: ICategory[] = await sp.web.lists.getById(categoryListId).items();
+
+    if (result) {
+      return result;
+    } else {
+      return [];
+    }
   }
 
   private _getDateFilter = (scopeType: ScopeType): string => {
